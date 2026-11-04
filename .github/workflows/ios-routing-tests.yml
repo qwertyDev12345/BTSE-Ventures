@@ -1,0 +1,57 @@
+name: iOS routing and consent regression tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'EasyLaunch-Patch/**'
+      - '.github/workflows/ios-routing-tests.yml'
+      - 'Gemfile*'
+  pull_request:
+    paths:
+      - 'EasyLaunch-Patch/**'
+      - '.github/workflows/ios-routing-tests.yml'
+      - 'Gemfile*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: routing-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-tests:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for optional EasyLaunch tests
+        id: easylaunch
+        shell: bash
+        run: |
+          if [ -f EasyLaunch-Patch/Tests/run_ios_tests.sh ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "EasyLaunch is absent; native routing tests are skipped." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: steps.easylaunch.outputs.present == 'true'
+        with:
+          xcode-version: latest-stable
+      - uses: ruby/setup-ruby@v1.269.0
+        if: steps.easylaunch.outputs.present == 'true'
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Test production controllers without Unity export or TestFlight
+        if: steps.easylaunch.outputs.present == 'true'
+        run: bundle exec bash EasyLaunch-Patch/Tests/run_ios_tests.sh
+      - name: Save results
+        if: always() && steps.easylaunch.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-routing-and-consent-results
+          path: build/routing-tests/*.xcresult
+          if-no-files-found: warn

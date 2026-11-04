@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0dc20eab6f76940847a4b17ca3e439, type: 3}
+  m_Name: Gameplay settings
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 0
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  tubeRotationDuration: 0.33
+  stickMoveToPosX: -1.285714
+  stickMoveDuration: 0.66
+  numOfBallsInGame: 10
+  screenOrientation: 1
+  winScreenDelay: 1
+  stopTimeOnWinScreen: 1
+  loseReloadDelay: 1
+  privacyPolicyLink: 
